@@ -1,5 +1,12 @@
+from listen_and_speak import ListenAndSpeak
 from gptApi import GptApi
 
-gpt = GptApi()
+listen = ListenAndSpeak()
 
-print(gpt.send_prompt(message='Olá!'))
+
+while True:
+    try:
+        listen.speak(listen.listen())
+    except KeyboardInterrupt:
+        break
+
