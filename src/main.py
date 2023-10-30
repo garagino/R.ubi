@@ -1,12 +1,12 @@
-from listen_and_speak import ListenAndSpeak
-from gptApi import GptApi
+from rubi import Rubi
 
-listen = ListenAndSpeak()
+rubi = Rubi()
 
+rubi.speak('Olá pessoa! Meu nome é Rubi! E estou aqui para te ajudar!')
 
 while True:
     try:
-        listen.speak(listen.listen())
+        rubi.speak(rubi.listen())
     except KeyboardInterrupt:
         break
 
