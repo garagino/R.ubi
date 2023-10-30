@@ -10,11 +10,11 @@ class ListenAndSpeak:
 
         self.__microfone = sr.Recognizer()
 
-    def speak(self, audio:str):
+    def speak(self, texto:str):
         self.__engine.setProperty('rate', self.__speed_voice)
         self.__engine.setProperty('volume', self.__volume_voice)
         self.__engine.setProperty('voice', self.__voice)
-        self.__engine.say(audio)
+        self.__engine.say(texto)
         self.__engine.runAndWait()
     
     def listen(self):
