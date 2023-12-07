@@ -25,12 +25,10 @@ class ListenAndSpeak:
         
         try:
             phrase = self.__microfone.recognize_google(audio, language='pt-BR')
-            print(f'Você disse: {phrase}')
-            return f'Você disse: {phrase}'
+            return phrase
         except sr.UnknownValueError:
             phrase = ''
-            print('Não entendi o que você disse')
-            return 'Não entendi o que você disse'
+            return 'Audio não reconhecido'
 
 
 
