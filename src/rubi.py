@@ -12,7 +12,7 @@ while True:
     pergunta = rubi.listen()
     print(pergunta)
 
-    if 'até mais' in pergunta.lower():
+    if 'até mais' in pergunta.lower() or 'tchau' in pergunta.lower() or 'adeus' in pergunta.lower():
         rubi.speak('Até mais!')
         break
 
