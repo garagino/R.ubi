@@ -8,10 +8,14 @@ class Rubi(ListenAndSpeak, GeminiApi):
 
 rubi = Rubi()
 
-rubi.speak('Olá pessoa! Meu nome é Rubi! E estou aqui para te ajudar!')
-pergunta = rubi.listen()
-print(pergunta)
+while True:
+    pergunta = rubi.listen()
+    print(pergunta)
 
-resposta = rubi.generate_content(pergunta)
-print(resposta)
-rubi.speak(resposta)
+    if 'até mais' in pergunta.lower():
+        rubi.speak('Até mais!')
+        break
+
+    resposta = rubi.generate_content(pergunta)
+    print(resposta)
+    rubi.speak(resposta)
