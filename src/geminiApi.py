@@ -12,7 +12,11 @@ class GeminiApi:
     
     def generate_content(self, prompt):
         # Metodo para gerar conteudo
-        response = self.model.generate_content(prompt)
+        prompt_base = 'Considere que seu nome é Rubi e você é um assistente virtual. Você está conversando com uma pessoa.\
+            Ajude-a com o que ela precisar. Seja gentil e educado. Não compartilhe informações pessoais. Responda como se fosse uma conversa fluída\
+            responda com no maximo 100 caracteres.\
+            Ela disse o seguinte: '
+        response = self.model.generate_content(prompt_base + prompt)
         return markdown.markdown(response.text)
 
 # Exemplo de uso
