@@ -5,17 +5,20 @@ class Rubi(ListenAndSpeak, GeminiApi):
     def __init__(self) -> None:
         ListenAndSpeak.__init__(self)
         GeminiApi.__init__(self)
+    
+    def conversation(self):
+        while True:
+            pergunta = self.listen()
+            print(pergunta)
+
+            if 'até mais' in pergunta.lower() or 'tchau' in pergunta.lower() or 'adeus' in pergunta.lower():
+                self.speak('Até mais!')
+                break
+
+            resposta = self.generate_content(pergunta)
+            print(resposta)
+            self.speak(resposta)
+
 
 rubi = Rubi()
-
-while True:
-    pergunta = rubi.listen()
-    print(pergunta)
-
-    if 'até mais' in pergunta.lower() or 'tchau' in pergunta.lower() or 'adeus' in pergunta.lower():
-        rubi.speak('Até mais!')
-        break
-
-    resposta = rubi.generate_content(pergunta)
-    print(resposta)
-    rubi.speak(resposta)
+rubi.conversation()

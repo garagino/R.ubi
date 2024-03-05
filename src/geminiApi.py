@@ -29,7 +29,8 @@ class GeminiApi:
         
         response = self.model.generate_content(self.message) # Gera a resposta baseada no contexto
         self.message.append(response.candidates[0].content) # Adiciona a resposta ao contexto
-        return markdown.markdown(response.text) # Retorna a resposta em texto
+        # return markdown.markdown(response.text) # Retorna a resposta em texto
+        return response.text # Retorna a resposta em texto
 
 # Exemplo de uso
 '''gemini = GeminiApi()
