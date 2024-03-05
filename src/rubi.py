@@ -21,4 +21,5 @@ class Rubi(ListenAndSpeak, GeminiApi):
 
 
 rubi = Rubi()
-rubi.conversation()
+# rubi.conversation()
+rubi.text_to_speech('Palavras de teste.')
