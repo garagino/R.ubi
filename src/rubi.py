@@ -24,13 +24,17 @@ class Rubi(ListenAndSpeak, GeminiApi):
                   'tchau' in pergunta.lower() or\
                   'adeus' in pergunta.lower():
 
-                self.speak('Até mais!')
+                print('Até mais! Foi um prazer conversar com você!')
+                self.text_to_speech('Até mais! Foi um prazer conversar com você!')
+                self.play_audio()
                 break
 
             resposta = self.generate_content(pergunta)
             print(resposta)
-            self.speak(resposta)
+            self.text_to_speech(resposta)
+            self.play_audio()
 
 
 rubi = Rubi()
 rubi.conversation()
+

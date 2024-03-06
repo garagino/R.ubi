@@ -1,6 +1,9 @@
 '''Módulo que contém a classe ListenAndSpeak, responsável por ouvir e falar com o usuário. V1.0.0'''
 from pyttsx3 import init
 import speech_recognition as sr
+import boto3
+import pygame
+from decouple import config
 
 class ListenAndSpeak:
     '''Classe responsável por transformar texto em voz e voz em texto.'''
@@ -12,8 +15,16 @@ class ListenAndSpeak:
 
         self.__microfone = sr.Recognizer()
 
+        # Configuração do cliente Polly
+        self.polly_client = boto3.client('polly', 
+                                aws_access_key_id=config('AWS_ACCESS_KEY_ID'), 
+                                aws_secret_access_key=config('AWS_SECRET_ACCESS_KEY'),
+                                region_name='sa-east-1')
+
     def speak(self, texto:str):
-        '''Método que transforma string em voz.
+        '''
+        (DEPRECATED)
+        Método que transforma string em voz.
         Funcionamento:
             - Configura a velocidade da voz;
             - Configura o volume da voz;
@@ -49,3 +60,33 @@ class ListenAndSpeak:
         except sr.UnknownValueError:
             phrase = ''
             return 'Audio não reconhecido'
+
+    def text_to_speech(self, text:str, voice_id:str='Ricardo'):
+        '''Método que transforma texto em voz.
+        Funcionamento:
+            - Sintetiza o texto em fala;
+            - Salva o áudio sintetizado em um arquivo;
+            - Reproduz o áudio.
+        Args:
+            text (str): Texto a ser transformado em voz.
+            voice_id (str, optional): Voz a ser utilizada. Defaults to 'Camila'.
+        
+        Modelo de vozes disponíveis:
+            Camila, Ricardo, Vitória
+        '''
+        response = self.polly_client.synthesize_speech(Text=text, VoiceId=voice_id, OutputFormat='mp3')
+        with open('output.mp3', 'wb') as file:
+            file.write(response['AudioStream'].read())
+    
+    def play_audio(self):
+        '''Método que reproduz o áudio salvo.
+        Funcionamento:
+            - Reproduz o áudio salvo.
+        '''
+        pygame.mixer.init()
+        pygame.mixer.music.load('output.mp3')
+        pygame.mixer.music.play()
+        while pygame.mixer.music.get_busy():
+            pygame.time.Clock().tick(10)
+        pygame.mixer.quit()
+
