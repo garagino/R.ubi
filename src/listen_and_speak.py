@@ -2,10 +2,8 @@
 from pyttsx3 import init
 import speech_recognition as sr
 import boto3
-from playsound import playsound
+import pygame
 from decouple import config
-import os
-import subprocess
 
 class ListenAndSpeak:
     '''Classe responsável por transformar texto em voz e voz em texto.'''
@@ -24,7 +22,9 @@ class ListenAndSpeak:
                                 region_name='sa-east-1')
 
     def speak(self, texto:str):
-        '''Método que transforma string em voz.
+        '''
+        (DEPRECATED)
+        Método que transforma string em voz.
         Funcionamento:
             - Configura a velocidade da voz;
             - Configura o volume da voz;
@@ -61,7 +61,7 @@ class ListenAndSpeak:
             phrase = ''
             return 'Audio não reconhecido'
 
-    def text_to_speech(self, text:str, voice_id:str='Camila'):
+    def text_to_speech(self, text:str, voice_id:str='Ricardo'):
         '''Método que transforma texto em voz.
         Funcionamento:
             - Sintetiza o texto em fala;
@@ -77,12 +77,16 @@ class ListenAndSpeak:
         response = self.polly_client.synthesize_speech(Text=text, VoiceId=voice_id, OutputFormat='mp3')
         with open('output.mp3', 'wb') as file:
             file.write(response['AudioStream'].read())
-        
-        try:
-            # Try using platform-specific commands for Linux/macOS and Windows
-            if os.name == 'posix':  # Linux or macOS
-                subprocess.run(['afplay', 'output.mp3'])
-            elif os.name == 'nt':  # Windows
-                subprocess.run(['start', 'output.mp3'], shell=True)
-        except (OSError, FileNotFoundError):
-            print("Error playing audio. Ensure file exists and appropriate player is installed.")
+    
+    def play_audio(self):
+        '''Método que reproduz o áudio salvo.
+        Funcionamento:
+            - Reproduz o áudio salvo.
+        '''
+        pygame.mixer.init()
+        pygame.mixer.music.load('output.mp3')
+        pygame.mixer.music.play()
+        while pygame.mixer.music.get_busy():
+            pygame.time.Clock().tick(10)
+        pygame.mixer.quit()
+
