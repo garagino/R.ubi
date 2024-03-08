@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>R.ubi</title>
+  </head>
+  <body>
+    <p id="output"></p>
+    <button id="start">Clique e fale algo!</button>
+    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.942.0.min.js"></script>
+
+    <script>
+      (() => {
+        const startBtn = document.querySelector("#start");
+        const output = document.querySelector("#output");
+
+        function start() {
+          const recognition = new webkitSpeechRecognition();
+          recognition.interimResults = true;
+          recognition.lang = "pt-BR";
+          recognition.continuous = true;
+          recognition.start();
+
+          recognition.onresult = function (event) {
+            for (let i = event.resultIndex; i < event.results.length; i++) {
+              if (event.results[i].isFinal) {
+                const content = event.results[i][0].transcript.trim();
+                output.textContent = content;
+              }
+            }
+          };
+        }
+        startBtn.addEventListener("click", () => start());
+      })();
+    </script>
+  </body>
+</html>

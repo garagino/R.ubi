@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rubi Assistente Virtual</title>
+  </head>
+  <body>
+    <h1>Rubi - Assistente Virtual</h1>
+    <div id="output"></div>
+    <button id="start">Iniciar</button>
+
+    <script>
+      const output = document.getElementById("output");
+      const startButton = document.getElementById("start");
+      const recognition = new webkitSpeechRecognition();
+
+      recognition.continuous = true;
+      recognition.lang = "pt-BR";
+
+      startButton.onclick = function () {
+        recognition.start();
+        output.innerHTML = "<p>Ouvindo...</p>";
+      };
+
+      recognition.onresult = function (event) {
+        const text =
+          event.results[event.results.length - 1][0].transcript.trim();
+        output.innerHTML = "<p>" + text + "</p>";
+
+        fetch("/conversation", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ pergunta: text }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            const resposta = data.resposta;
+            output.innerHTML += "<p>Rubi diz: " + resposta + "</p>";
+            const utterance = new SpeechSynthesisUtterance(resposta);
+            speechSynthesis.speak(utterance);
+          });
+      };
+
+      recognition.onerror = function (event) {
+        output.innerHTML =
+          "<p>Ocorreu um erro no reconhecimento de voz: " +
+          event.error +
+          "</p>";
+      };
+    </script>
+  </body>
+</html>

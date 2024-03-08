@@ -35,6 +35,6 @@ class Rubi(ListenAndSpeak, GeminiApi):
             self.play_audio()
 
 
-rubi = Rubi()
-rubi.conversation()
+# rubi = Rubi()
+# rubi.conversation()
 
