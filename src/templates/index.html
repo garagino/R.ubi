@@ -6,9 +6,17 @@
   <body>
     <p id="output"></p>
     <button id="start">Clique e fale algo!</button>
-    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.942.0.min.js"></script>
 
+    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.971.0.min.js"></script>
     <script>
+      // Configuração da AWS
+      AWS.config.update({
+        accessKeyId: "{{ context.aws_acess_key_id }}",
+        secretAccessKey: "{{ context.aws_acess_secret_key }}",
+        region: "{{ context.aws_region_name }}",
+      });
+
+      // Função para reconhecer a voz do usuário
       (() => {
         const startBtn = document.querySelector("#start");
         const output = document.querySelector("#output");
@@ -24,12 +32,55 @@
             for (let i = event.resultIndex; i < event.results.length; i++) {
               if (event.results[i].isFinal) {
                 const content = event.results[i][0].transcript.trim();
-                output.textContent = content;
+                output.innerHTML += "Você: " + content + "<br/>";
+
+                // Enviar a mensagem reconhecida para o chatbot
+                fetch("/conversation", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({ pergunta: content }),
+                })
+                  .then((response) => response.json())
+                  .then((data) => {
+                    const resposta = data.resposta;
+
+                    // Sintetizar voz com a API Polly e reproduzir áudio no navegador
+                    synthesiseSpeech(resposta, playAudio);
+                    output.innerHTML += "R.ubi: " + resposta + "<br/>";
+                  });
               }
             }
           };
         }
         startBtn.addEventListener("click", () => start());
+
+        // Função para solicitar a síntese de voz com a API Polly
+        function synthesiseSpeech(text, callback) {
+          var params = {
+            Text: text,
+            OutputFormat: "mp3",
+            VoiceId: "Ricardo", // por exemplo, 'Joanna'
+          };
+
+          var polly = new AWS.Polly();
+
+          polly.synthesizeSpeech(params, function (err, data) {
+            if (err) console.log(err, err.stack);
+            else callback(data.AudioStream);
+          });
+        }
+
+        // Função para reproduzir áudio no navegador
+        function playAudio(audioStream) {
+          var blob = new Blob([audioStream], { type: "audio/mp3" });
+          var url = URL.createObjectURL(blob);
+
+          var audio = new Audio();
+          audio.src = url;
+          audio.play();
+        }
       })();
     </script>
   </body>
