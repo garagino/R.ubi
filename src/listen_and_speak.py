@@ -1,5 +1,4 @@
 '''Módulo que contém a classe ListenAndSpeak, responsável por ouvir e falar com o usuário. V1.0.0'''
-from pyttsx3 import init
 import speech_recognition as sr
 import boto3
 import pygame
@@ -8,11 +7,6 @@ from decouple import config
 class ListenAndSpeak:
     '''Classe responsável por transformar texto em voz e voz em texto.'''
     def __init__(self) -> None:
-        self.__engine = init()
-        self.__voice = self.__engine.getProperty('voices')[0]
-        self.__speed_voice = 250
-        self.__volume_voice = 1
-
         self.__microfone = sr.Recognizer()
 
         # Configuração do cliente Polly
@@ -20,25 +14,6 @@ class ListenAndSpeak:
                                 aws_access_key_id=config('AWS_ACCESS_KEY_ID'), 
                                 aws_secret_access_key=config('AWS_SECRET_ACCESS_KEY'),
                                 region_name='sa-east-1')
-
-    def speak(self, texto:str):
-        '''
-        (DEPRECATED)
-        Método que transforma string em voz.
-        Funcionamento:
-            - Configura a velocidade da voz;
-            - Configura o volume da voz;
-            - Configura o tipo de voz;
-            - Fala o texto.
-            - Trava a excecução do código e aguarda a voz terminar de falar.
-        Args:
-            texto (str): Texto a ser transformado em voz.
-        '''
-        self.__engine.setProperty('rate', self.__speed_voice)
-        self.__engine.setProperty('volume', self.__volume_voice)
-        self.__engine.setProperty('voice', self.__voice)
-        self.__engine.say(texto)
-        self.__engine.runAndWait()
 
     def listen(self):
         '''Método que transforma voz em string.
