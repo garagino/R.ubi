@@ -32,7 +32,6 @@ class Rubi(ListenAndSpeak, GeminiApi):
             resposta = self.generate_content(pergunta)
             print(resposta)
             self.text_to_speech(resposta)
-            self.play_audio()
 
 
 rubi = Rubi()
